@@ -1,6 +1,9 @@
-# homebridge-thermostat
+# homebridge-thermostat-willha
 
-Supports thermostat devices on HomeBridge Platform
+Supports my thermostat device on HomeBridge Platform.
+Forked from https://github.com/PJCzx/homebridge-thermostat - thanks!
+
+This supports my homebrew thermostat which provides a JSON/REST interface to get/set the target temperature.
 
 # Installation
 
