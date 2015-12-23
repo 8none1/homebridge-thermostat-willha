@@ -42,7 +42,7 @@ function Thermostat(log, config) {
 	this.get_heatcool_state_url = config["get_heatcool_state_url"];
 	this.set_heatcool_state_url = config["set_heatcool_state_url"] | "";
 	this.sendimmediately = config["send_immediately"] || "";
-	//this.log(this);
+	this.log(this);
 
 	//Characteristic.TemperatureDisplayUnits.CELSIUS = 0;
 	//Characteristic.TemperatureDisplayUnits.FAHRENHEIT = 1;
@@ -97,7 +97,7 @@ Thermostat.prototype = {
 	        callback(error);
 	      } else {
 	        var a = JSON.parse(responseBody);
-	        // Off = 0, heat = 1 (probably 'true'), cool = 2 (we don't do "cooling" in the UK, so we won't need to deal with it.  In theory a true or false response will match then.
+	        // Off = 0, heat = 1, cool = 2
 	        // Should be able to get this from http://piwarmer/get/ch
 	        heatCoolState = a['state'] ? 1:0;
 	        this.log("Current heat/cool state is:  %s", heatCoolState);
@@ -147,6 +147,12 @@ Thermostat.prototype = {
 		callback(error, this.temperatureDisplayUnits);
 	},
 
+	getName: function(callback) {
+		this.log("getName :", this.name);
+		var error = null;
+		callback(error, this.name);
+	},
+
 	// Optional
 	/*getCurrentRelativeHumidity: function(callback) {
 		this.log("getCurrentRelativeHumidity :", this.relativeHumidity);
@@ -167,11 +173,6 @@ Thermostat.prototype = {
 		this.log("getHeatingThresholdTemperature :" , this.heatingThresholdTemperature);
 		var error = null;
 		callback(error, this.heatingThresholdTemperature);
-	},
-	getName: function(callback) {
-		this.log("getName :", this.name);
-		var error = null;
-		callback(error, this.name);
 	},*/
 
 	getServices: function() {
@@ -202,6 +203,7 @@ Thermostat.prototype = {
 
 			thermostatService
 				.getCharacteristic(Characteristic.TargetTemperature)
+				.setProps({minValue: 10, minStep:1, maxValue: 25})
 				.on('set', this.setTargetTemperature.bind(this));
 
 			thermostatService
@@ -233,5 +235,5 @@ Thermostat.prototype = {
 			
 
 			return [informationService, thermostatService];
-		}
+		},
 };
